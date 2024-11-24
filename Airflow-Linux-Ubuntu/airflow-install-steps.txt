@@ -1,0 +1,62 @@
+
+## Documentation for installing airflow on EC2 instance.
+
+1. Require at least 4 gb of memory to run airflow DEV environment.
+# check total avail memory with this command.
+docker run --rm "debian:bookworm-slim" bash -c 'numfmt --to iec $(echo $(($(getconf _PHYS_PAGES) * $(getconf PAGE_SIZE))))'
+
+2. Download Docker compose file using below command.
+curl -LfO 'https://airflow.apache.org/docs/apache-airflow/2.10.3/docker-compose.yaml'
+
+3. On Linux, the quick-start needs to know your host user id and needs
+ to have group id set to 0. Otherwise the files created in dags, logs
+ and plugins will be created with root user ownership. You have to make
+ sure to configure them for the docker-compose:
+
+mkdir -p ./dags ./logs ./plugins ./config
+echo -e "AIRFLOW_UID=$(id -u)" > .env
+
+
+4. On all operating systems, you need to run database migrations and create
+ the first user account. To do this, run.
+
+docker compose up airflow-init
+
+5. In case of a problem we can run following commands to resolve the
+issue.
+# Run docker compose down --volumes --remove-orphans command in the directory
+   # you downloaded the docker-compose.yaml file
+# Remove the entire directory where you downloaded the docker-compose.yaml
+   # file rm -rf '<DIRECTORY>'
+# Run through this guide from the very beginning, starting by re-downloading
+   # the docker-compose.yaml file
+
+#### Running Airflow
+docker compose up
+
+### access airflow using CLI commands
+docker compose run airflow-worker airflow info
+        # If you have Linux or Mac OS, you can make your work easier and
+        # download a optional wrapper scripts that will allow you to
+        # run commands with a simpler command.
+curl -LfO 'https://airflow.apache.org/docs/apache-airflow/2.10.3/airflow.sh'
+chmod +x airflow.sh
+
+./airflow.sh info
+
+./airflow.sh bash
+
+./airflow.sh python
+
+
+### To stop and delete containers, delete volumes with database data and
+download images, run:
+
+
+
+
+### Reference documentation:-
+# https://airflow.apache.org/docs/apache-airflow/stable/howto/docker-compose/index.html
+# docker compose down --volumes --rmi all
+
+
