@@ -1,0 +1,31 @@
+
+
+# simple Run Docker command
+docker run -d --name singlestoredb-dev -e ROOT_PASSWORD="Root-123" -p 3306:3306 -p 8080:8080 -p 9000:9000 ghcr.io/singlestore-labs/singlestoredb-dev:latest
+
+
+# more refined command 
+cur_path=$(pwd); 
+docker run -d --name singlestoredb-dev \
+ -e ROOT_PASSWORD="Root-123" \
+ -p 3309:3306 -p 8090:8080 -p 9001:9000 \
+ -v $cur_path/data/:/var/lib/singlestoredb \
+ --network mynetwork \
+ ghcr.io/singlestore-labs/singlestoredb-dev:latest
+
+# Open shell in SS DB container
+docker exec -it singlestoredb-dev singlestore -pRoot-123
+
+# you can access studio at http://localhost:8080
+
+# START & STOP Docker container 
+docker [start | stop ] singlestoredb-dev
+
+# Reference 
+https://github.com/singlestore-labs/singlestoredb-dev-image
+
+
+# Docker network
+docker network create --driver bridge mynetwork
+
+
